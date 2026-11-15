@@ -1,0 +1,1 @@
+# afrigo-account-deletion
