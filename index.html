@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css" />
   <style>
     :root {
       /* Exact AfriGoDesignSystem Light / Onboarding Tokens */
@@ -400,6 +401,53 @@
       display: flex;
     }
 
+    /* Help icon + tooltip for Account ID */
+    .help-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      margin-left: 4px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: var(--afrigo-gold-deep);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: color 0.15s ease, background-color 0.15s ease;
+      vertical-align: middle;
+    }
+
+    .help-icon-btn:hover,
+    .help-icon-btn:focus-visible {
+      color: var(--afrigo-green);
+      background: rgba(212, 163, 89, 0.15);
+      outline: none;
+    }
+
+    .help-icon-btn .ph {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .help-tooltip {
+      display: none;
+      margin: 6px 0 10px 30px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--afrigo-surface);
+      border: 1px solid var(--afrigo-border-strong);
+      font-size: 12.5px;
+      line-height: 18px;
+      color: var(--afrigo-text);
+      box-shadow: 0 4px 12px rgba(11, 40, 31, 0.08);
+    }
+
+    .help-tooltip.is-visible {
+      display: block;
+    }
+
     /* Acknowledgement Checkbox */
     .ack-box {
       margin: 6px 0 24px;
@@ -508,17 +556,23 @@
       transition: transform 0.12s ease, box-shadow 0.18s ease, opacity 0.18s ease;
     }
 
-    .submit-button:hover {
+    .submit-button:hover:not(:disabled) {
       box-shadow: 0 8px 20px rgba(11, 40, 31, 0.22);
     }
 
-    .submit-button:active {
+    .submit-button:active:not(:disabled) {
       transform: scale(0.99);
     }
 
     .submit-button:focus-visible {
       outline: 2px solid var(--afrigo-gold);
       outline-offset: 3px;
+    }
+
+    .submit-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
     }
 
     /* Policy / Disclosure Cards */
@@ -680,6 +734,10 @@
         margin-left: 0;
       }
 
+      .help-tooltip {
+        margin-left: 0;
+      }
+
       .field-header {
         flex-wrap: wrap;
         gap: 6px 10px;
@@ -808,7 +866,7 @@
           </div>
         </div>
 
-        <!-- 2. AfriGo Account Email or Identifier (Optional) -->
+        <!-- 2. AfriGo Account Email or Identifier (Required) -->
         <div class="field-group">
           <div class="field-header">
             <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -816,53 +874,67 @@
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
             <label class="field-label" for="accountIdentifier">
-              AfriGo account email or identifier <span class="field-optional">(optional)</span>
+              AfriGo account email or identifier <span class="field-required-tag">(required)</span>
             </label>
           </div>
           <p class="field-subtitle" id="accountIdentifierHint">
-            If your AfriGo sign-in email or profile name differs from your contact email above.
+            Your AfriGo sign-in email, username, or profile name.
           </p>
-          <div class="input-shell">
+          <div class="input-shell" id="accountIdentifierShell">
             <input
               id="accountIdentifier"
               name="accountIdentifier"
               type="text"
               class="text-input"
+              required
               placeholder="Account email, username, or profile identifier"
-              aria-describedby="accountIdentifierHint"
+              aria-describedby="accountIdentifierHint accountIdentifierError"
             >
+          </div>
+          <div class="field-error-text" id="accountIdentifierError" role="alert">
+            Please enter your AfriGo account email or identifier.
           </div>
         </div>
 
-        <!-- 3. Installation ID (Optional) -->
+        <!-- 3. Account ID (Required) - formerly Installation ID -->
         <div class="field-group">
           <div class="field-header">
             <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="5" y="2" width="14" height="20" rx="2.5"></rect>
               <line x1="12" y1="18" x2="12.01" y2="18"></line>
             </svg>
-            <label class="field-label" for="installationId">
-              Installation ID <span class="field-optional">(optional)</span>
+            <label class="field-label" for="accountId">
+              Account ID <span class="field-required-tag">(required)</span>
             </label>
+            <button type="button" class="help-icon-btn" id="accountIdHelpBtn" aria-label="Help: Where to find Account ID" aria-expanded="false" aria-controls="accountIdHelpTooltip">
+              <i class="ph ph-question" aria-hidden="true"></i>
+            </button>
           </div>
-          <p class="field-subtitle" id="installationIdHint">
-            Optional 32-character Astra installation ID, if you have it recorded.
+          <p class="field-subtitle" id="accountIdHint">
+            Your 32-character AfriGo account ID.
           </p>
-          <div class="input-shell">
+          <div class="help-tooltip" id="accountIdHelpTooltip" role="tooltip">
+            Contact AfriGo in-app customer support if you are not sure.
+          </div>
+          <div class="input-shell" id="accountIdShell">
             <input
-              id="installationId"
-              name="installationId"
+              id="accountId"
+              name="accountId"
               type="text"
               class="text-input"
+              required
               autocapitalize="off"
               spellcheck="false"
-              placeholder="32-character installation identifier"
-              aria-describedby="installationIdHint"
+              placeholder="32-character account identifier"
+              aria-describedby="accountIdHint accountIdError"
             >
+          </div>
+          <div class="field-error-text" id="accountIdError" role="alert">
+            Please enter your Account ID.
           </div>
         </div>
 
-        <!-- 4. Additional Identifying Information (Optional) -->
+        <!-- 4. Additional Identifying Information (Required) -->
         <div class="field-group">
           <div class="field-header">
             <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -872,21 +944,25 @@
               <line x1="8" y1="17" x2="13" y2="17"></line>
             </svg>
             <label class="field-label" for="additionalInformation">
-              Additional identifying information <span class="field-optional">(optional)</span>
+              Additional identifying information <span class="field-required-tag">(required)</span>
             </label>
           </div>
           <p class="field-subtitle" id="additionalInfoHint">
             Any helpful details (such as approximate sign-up date or city) to assist verification.
           </p>
-          <div class="input-shell">
+          <div class="input-shell" id="additionalInformationShell">
             <textarea
               id="additionalInformation"
               name="additionalInformation"
               class="textarea-input"
               rows="3"
+              required
               placeholder="Share any additional details that help us locate your account"
-              aria-describedby="additionalInfoHint"
+              aria-describedby="additionalInfoHint additionalInformationError"
             ></textarea>
+          </div>
+          <div class="field-error-text" id="additionalInformationError" role="alert">
+            Please provide additional identifying information.
           </div>
         </div>
 
@@ -918,7 +994,7 @@
         </div>
 
         <!-- 6. Submit Button -->
-        <button type="submit" id="submitDeletionButton" class="submit-button">
+        <button type="submit" id="submitDeletionButton" class="submit-button" disabled>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M22 2 11 13"></path>
             <path d="m22 2-7 20-4-9-9-4Z"></path>
@@ -1008,12 +1084,19 @@
       var form = document.getElementById('deletionForm');
       var contactEmailInput = document.getElementById('contactEmail');
       var accountIdentifierInput = document.getElementById('accountIdentifier');
-      var installationIdInput = document.getElementById('installationId');
+      var accountIdInput = document.getElementById('accountId');
       var additionalInformationInput = document.getElementById('additionalInformation');
       var ackCheckbox = document.getElementById('deletionAcknowledgement');
+      var submitButton = document.getElementById('submitDeletionButton');
 
       var contactEmailShell = document.getElementById('contactEmailShell');
       var contactEmailError = document.getElementById('contactEmailError');
+      var accountIdentifierShell = document.getElementById('accountIdentifierShell');
+      var accountIdentifierError = document.getElementById('accountIdentifierError');
+      var accountIdShell = document.getElementById('accountIdShell');
+      var accountIdError = document.getElementById('accountIdError');
+      var additionalInformationShell = document.getElementById('additionalInformationShell');
+      var additionalInformationError = document.getElementById('additionalInformationError');
       var ackBox = document.getElementById('ackBox');
       var ackError = document.getElementById('ackError');
       var formErrorBanner = document.getElementById('formErrorBanner');
@@ -1023,16 +1106,23 @@
       var fallbackMailtoLink = document.getElementById('fallbackMailtoLink');
       var copyDraftButton = document.getElementById('copyDraftButton');
 
+      var accountIdHelpBtn = document.getElementById('accountIdHelpBtn');
+      var accountIdHelpTooltip = document.getElementById('accountIdHelpTooltip');
+
       var lastBuiltBody = '';
 
       function isValidEmail(value) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       }
 
+      function isNonEmpty(value) {
+        return (value || '').trim().length > 0;
+      }
+
       function buildDeletionMailto(fields) {
         var contactEmail = (fields.contactEmail || '').trim();
         var accountIdentifier = (fields.accountIdentifier || '').trim();
-        var installationId = (fields.installationId || '').trim();
+        var accountId = (fields.accountId || '').trim();
         var additionalInformation = (fields.additionalInformation || '').trim();
 
         var subject = SUBJECT_TEXT;
@@ -1042,9 +1132,9 @@
           'I am requesting deletion of my AfriGo account and associated personal data.',
           '',
           'Contact email: ' + contactEmail,
-          'AfriGo account email or identifier: ' + (accountIdentifier || 'Not provided'),
-          'Installation ID: ' + (installationId || 'Not provided'),
-          'Additional information: ' + (additionalInformation || 'Not provided'),
+          'AfriGo account email or identifier: ' + accountIdentifier,
+          'Account ID: ' + accountId,
+          'Additional information: ' + additionalInformation,
           '',
           'Please let me know if you need further information to verify my request.',
           '',
@@ -1063,13 +1153,13 @@
         };
       }
 
-      function setEmailErrorState(show, message) {
-        contactEmailShell.classList.toggle('has-error', show);
-        contactEmailError.classList.toggle('is-visible', show);
-        contactEmailInput.setAttribute('aria-invalid', show ? 'true' : 'false');
-        if (message) {
-          contactEmailError.textContent = message;
+      function setFieldError(shell, errorEl, input, show, message) {
+        if (shell) shell.classList.toggle('has-error', show);
+        if (errorEl) {
+          errorEl.classList.toggle('is-visible', show);
+          if (message) errorEl.textContent = message;
         }
+        if (input) input.setAttribute('aria-invalid', show ? 'true' : 'false');
       }
 
       function setAckErrorState(show) {
@@ -1087,70 +1177,135 @@
         formErrorBanner.classList.add('is-visible');
       }
 
-      contactEmailInput.addEventListener('input', function () {
-        var trimmed = contactEmailInput.value.trim();
-        if (trimmed && isValidEmail(trimmed)) {
-          setEmailErrorState(false);
-          if (ackCheckbox.checked) {
-            updateErrorBanner([]);
+      function validateAll(showErrors) {
+        var contactEmail = contactEmailInput.value.trim();
+        var accountIdentifier = accountIdentifierInput.value.trim();
+        var accountId = accountIdInput.value.trim();
+        var additionalInformation = additionalInformationInput.value.trim();
+        var ackChecked = ackCheckbox.checked;
+
+        var errors = [];
+        var emailInvalid = !contactEmail || !isValidEmail(contactEmail);
+        var identifierMissing = !isNonEmpty(accountIdentifier);
+        var accountIdMissing = !isNonEmpty(accountId);
+        var additionalMissing = !isNonEmpty(additionalInformation);
+        var ackMissing = !ackChecked;
+
+        if (showErrors) {
+          if (emailInvalid) {
+            var emailMsg = !contactEmail
+              ? 'Please enter your contact email address.'
+              : 'Please enter a valid contact email address.';
+            setFieldError(contactEmailShell, contactEmailError, contactEmailInput, true, emailMsg);
+            errors.push(emailMsg);
+          } else {
+            setFieldError(contactEmailShell, contactEmailError, contactEmailInput, false);
           }
+
+          if (identifierMissing) {
+            setFieldError(accountIdentifierShell, accountIdentifierError, accountIdentifierInput, true, 'Please enter your AfriGo account email or identifier.');
+            errors.push('Please enter your AfriGo account email or identifier.');
+          } else {
+            setFieldError(accountIdentifierShell, accountIdentifierError, accountIdentifierInput, false);
+          }
+
+          if (accountIdMissing) {
+            setFieldError(accountIdShell, accountIdError, accountIdInput, true, 'Please enter your Account ID.');
+            errors.push('Please enter your Account ID.');
+          } else {
+            setFieldError(accountIdShell, accountIdError, accountIdInput, false);
+          }
+
+          if (additionalMissing) {
+            setFieldError(additionalInformationShell, additionalInformationError, additionalInformationInput, true, 'Please provide additional identifying information.');
+            errors.push('Please provide additional identifying information.');
+          } else {
+            setFieldError(additionalInformationShell, additionalInformationError, additionalInformationInput, false);
+          }
+
+          if (ackMissing) {
+            setAckErrorState(true);
+            errors.push('Please confirm the deletion acknowledgement.');
+          } else {
+            setAckErrorState(false);
+          }
+
+          updateErrorBanner(errors);
+        } else {
+          // Clear errors when validating silently for button state
+          if (!emailInvalid) setFieldError(contactEmailShell, contactEmailError, contactEmailInput, false);
+          if (!identifierMissing) setFieldError(accountIdentifierShell, accountIdentifierError, accountIdentifierInput, false);
+          if (!accountIdMissing) setFieldError(accountIdShell, accountIdError, accountIdInput, false);
+          if (!additionalMissing) setFieldError(additionalInformationShell, additionalInformationError, additionalInformationInput, false);
+          if (!ackMissing) setAckErrorState(false);
         }
+
+        var allValid = !emailInvalid && !identifierMissing && !accountIdMissing && !additionalMissing && !ackMissing;
+        submitButton.disabled = !allValid;
+        return allValid;
+      }
+
+      // Real-time validation to enable/disable submit button
+      function onFieldChange() {
+        validateAll(false);
+      }
+
+      contactEmailInput.addEventListener('input', onFieldChange);
+      contactEmailInput.addEventListener('blur', function () {
+        var trimmed = contactEmailInput.value.trim();
+        if (trimmed && !isValidEmail(trimmed)) {
+          setFieldError(contactEmailShell, contactEmailError, contactEmailInput, true, 'Please enter a valid contact email address.');
+        } else if (trimmed) {
+          setFieldError(contactEmailShell, contactEmailError, contactEmailInput, false);
+        }
+        validateAll(false);
       });
 
-      ackCheckbox.addEventListener('change', function () {
-        if (ackCheckbox.checked) {
-          setAckErrorState(false);
-          if (isValidEmail(contactEmailInput.value.trim())) {
-            updateErrorBanner([]);
-          }
+      accountIdentifierInput.addEventListener('input', onFieldChange);
+      accountIdInput.addEventListener('input', onFieldChange);
+      additionalInformationInput.addEventListener('input', onFieldChange);
+      ackCheckbox.addEventListener('change', onFieldChange);
+
+      // Help tooltip toggle
+      accountIdHelpBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var isVisible = accountIdHelpTooltip.classList.toggle('is-visible');
+        accountIdHelpBtn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+      });
+
+      // Close tooltip when clicking outside
+      document.addEventListener('click', function (e) {
+        if (!accountIdHelpBtn.contains(e.target) && !accountIdHelpTooltip.contains(e.target)) {
+          accountIdHelpTooltip.classList.remove('is-visible');
+          accountIdHelpBtn.setAttribute('aria-expanded', 'false');
         }
       });
 
       form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        var contactEmail = contactEmailInput.value.trim();
-        var accountIdentifier = accountIdentifierInput.value.trim();
-        var installationId = installationIdInput.value.trim();
-        var additionalInformation = additionalInformationInput.value.trim();
-
-        var errors = [];
-        var emailInvalid = !contactEmail || !isValidEmail(contactEmail);
-        var ackMissing = !ackCheckbox.checked;
-
-        if (emailInvalid) {
-          var emailMsg = !contactEmail
-            ? 'Please enter your contact email address.'
-            : 'Please enter a valid contact email address.';
-          setEmailErrorState(true, emailMsg);
-          errors.push(emailMsg);
-        } else {
-          setEmailErrorState(false);
-        }
-
-        if (ackMissing) {
-          setAckErrorState(true);
-          errors.push('Please confirm the deletion acknowledgement.');
-        } else {
-          setAckErrorState(false);
-        }
-
-        updateErrorBanner(errors);
-
-        if (emailInvalid) {
-          contactEmailInput.focus();
-          return;
-        }
-        if (ackMissing) {
-          ackCheckbox.focus();
+        var isValid = validateAll(true);
+        if (!isValid) {
+          // Focus first invalid field
+          if (!isValidEmail(contactEmailInput.value.trim())) {
+            contactEmailInput.focus();
+          } else if (!isNonEmpty(accountIdentifierInput.value)) {
+            accountIdentifierInput.focus();
+          } else if (!isNonEmpty(accountIdInput.value)) {
+            accountIdInput.focus();
+          } else if (!isNonEmpty(additionalInformationInput.value)) {
+            additionalInformationInput.focus();
+          } else if (!ackCheckbox.checked) {
+            ackCheckbox.focus();
+          }
           return;
         }
 
         var payload = buildDeletionMailto({
-          contactEmail: contactEmail,
-          accountIdentifier: accountIdentifier,
-          installationId: installationId,
-          additionalInformation: additionalInformation
+          contactEmail: contactEmailInput.value.trim(),
+          accountIdentifier: accountIdentifierInput.value.trim(),
+          accountId: accountIdInput.value.trim(),
+          additionalInformation: additionalInformationInput.value.trim()
         });
 
         lastBuiltBody = payload.body;
@@ -1178,6 +1333,9 @@
           });
         }
       });
+
+      // Initial state: button disabled
+      validateAll(false);
     })();
   </script>
 </body>
